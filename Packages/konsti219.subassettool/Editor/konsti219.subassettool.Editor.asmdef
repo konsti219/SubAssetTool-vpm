@@ -1,0 +1,14 @@
+{
+  "name": "konsti219.subassettool.Editor",
+  "references": [
+    "konsti219.subassettool"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "defineConstraints": [],
+  "optionalUnityReferences": []
+}

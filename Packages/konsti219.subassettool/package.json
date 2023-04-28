@@ -1,0 +1,15 @@
+{
+  "name": "konsti219.subassettool",
+  "displayName": "Sub Asset Tool",
+  "author": {
+    "name": "konsti219"
+  },
+  "version": "0.1.0",
+  "description": "This tool always editing of the sub assets (or objects) contained within a single asset file on disk.\n\n- View sub assets\n- Change sub asset visibility\n- Rename sub assets\n- Extract sub assets\n- Remove sub assets\n- Re add removed sub assets to other assets",
+  "gitDependencies": {},
+  "vpmDependencies": {},
+  "legacyFolders": {},
+  "legacyFiles": {},
+  "localPath": ".\\Packages\\konsti219.subassettool",
+  "type": "tool"
+}
