@@ -43,43 +43,39 @@ public class SubAssetTool : EditorWindow, IHasCustomMenu
         MainScroll = EditorGUILayout.BeginScrollView(MainScroll);
         EditorGUI.BeginChangeCheck();
 
+
         // Main asset selction
         selectedAsset = EditorGUILayout.TextField("Asset", selectedAsset);
         GUILayout.Space(15);
-
 
         // Object display list
         var isLastObject = false;
 
         // main object
         var mainObject = objects.Find(obj => AssetDatabase.IsMainAsset(obj));
-        if (mainObject == null && objects.Count > 0)
+        if (mainObject != null)
         {
-            AssetDatabase.SetMainObject(objects[0], selectedAsset);
-            loadAssets();
-            mainObject = objects[0];
-        }
-
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.ObjectField(mainObject, typeof(UnityEngine.Object), false);
-        if (GUILayout.Button("Remove", GUILayout.MaxWidth(60)))
-        {
-            if (!removedObjects.Contains(mainObject))
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.ObjectField(mainObject, typeof(UnityEngine.Object), false);
+            if (GUILayout.Button("Remove", GUILayout.MaxWidth(60)))
             {
-                removedObjects.Add(mainObject);
-            }
-            isLastObject = objects.Count == 1;
-            AssetDatabase.RemoveObjectFromAsset(mainObject);
+                if (!removedObjects.Contains(mainObject))
+                {
+                    removedObjects.Add(mainObject);
+                }
+                isLastObject = objects.Count == 1;
+                AssetDatabase.RemoveObjectFromAsset(mainObject);
 
-            if (isLastObject)
-            {
-                AssetDatabase.DeleteAsset(selectedAsset);
-                selectedAsset = "";
+                if (isLastObject)
+                {
+                    AssetDatabase.DeleteAsset(selectedAsset);
+                    selectedAsset = "";
+                }
+                loadAssets();
+                Repaint();
             }
-            loadAssets();
-            Repaint();
+            EditorGUILayout.EndHorizontal();
         }
-        EditorGUILayout.EndHorizontal();
 
         // sub objects/assets
         foreach (var obj in objects)
@@ -152,7 +148,7 @@ public class SubAssetTool : EditorWindow, IHasCustomMenu
                             AssetDatabase.StartAssetEditing();
                             AssetDatabase.SetMainObject(obj, selectedAsset);
                             AssetDatabase.MoveAsset(selectedAsset, newPath);
-                            AssetDatabase.ForceReserializeAssets(new List<string>() { newPath });
+                            AssetDatabase.SaveAssets();
                             Selection.activeObject = obj;
                             selectedAsset = newPath;
 
@@ -169,9 +165,11 @@ public class SubAssetTool : EditorWindow, IHasCustomMenu
                     }
                     if (GUILayout.Button("Extract", GUILayout.MaxWidth(60)))
                     {
+                        obj.hideFlags &= ~HideFlags.HideInHierarchy;
                         AssetDatabase.RemoveObjectFromAsset(obj);
                         AssetDatabase.CreateAsset(obj, newPath);
                         AssetDatabase.SetMainObject(obj, newPath);
+                        AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
                         loadAssets();
                     }
@@ -222,24 +220,7 @@ public class SubAssetTool : EditorWindow, IHasCustomMenu
         // Clean up code
         if (EditorGUI.EndChangeCheck())
         {
-            // various things sometimes required for makignthe Project window update
-
-            // do not try to save an asset that was just deleted
-            if (!isLastObject)
-            {
-                try
-                {
-                    AssetDatabase.ForceReserializeAssets(new List<string>() { selectedAsset });
-                }
-                catch
-                {
-                    // this seems to randomly error out when adding objects, suppress
-                    Debug.Log("^^ You can ignore this");
-                }
-                var mainAsset = AssetDatabase.LoadMainAssetAtPath(selectedAsset);
-                if (mainAsset != null)
-                    EditorUtility.SetDirty(mainAsset);
-            }
+            AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
             loadAssets();
