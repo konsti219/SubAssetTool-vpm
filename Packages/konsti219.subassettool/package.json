@@ -4,7 +4,7 @@
   "author": {
     "name": "konsti219"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "This tool allows editing of the sub assets (or objects) contained within a single asset file on disk.  - View sub assets - Change sub asset visibility - Rename sub assets - Extract sub assets - Remove sub assets - Re add removed sub assets to other assets",
   "gitDependencies": {},
   "vpmDependencies": {},

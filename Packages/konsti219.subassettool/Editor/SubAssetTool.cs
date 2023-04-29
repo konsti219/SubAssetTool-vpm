@@ -53,6 +53,13 @@ public class SubAssetTool : EditorWindow, IHasCustomMenu
 
         // main object
         var mainObject = objects.Find(obj => AssetDatabase.IsMainAsset(obj));
+        if (mainObject == null && objects.Count > 0)
+        {
+            AssetDatabase.SetMainObject(objects[0], selectedAsset);
+            loadAssets();
+            mainObject = objects[0];
+        }
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.ObjectField(mainObject, typeof(UnityEngine.Object), false);
         if (GUILayout.Button("Remove", GUILayout.MaxWidth(60)))
@@ -164,6 +171,8 @@ public class SubAssetTool : EditorWindow, IHasCustomMenu
                     {
                         AssetDatabase.RemoveObjectFromAsset(obj);
                         AssetDatabase.CreateAsset(obj, newPath);
+                        AssetDatabase.SetMainObject(obj, newPath);
+                        AssetDatabase.Refresh();
                         loadAssets();
                     }
                     GUI.enabled = true;
@@ -283,7 +292,6 @@ public class SubAssetTool : EditorWindow, IHasCustomMenu
 
     string fileExtenion(UnityEngine.Object obj)
     {
-        //('.mat' for materials, '.cubemap' for cubemaps, '.GUISkin' for skins, '.anim' for animations and '.asset' for arbitrary other assets.)
         if (obj is Material)
             return ".mat";
         if (obj is Cubemap)
@@ -292,6 +300,8 @@ public class SubAssetTool : EditorWindow, IHasCustomMenu
         //     return ".GUISkin";
         if (obj is AnimationClip)
             return ".anim";
+        if (obj is RuntimeAnimatorController)
+            return ".controller";
 
         return ".asset";
     }
