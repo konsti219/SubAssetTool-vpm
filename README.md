@@ -4,6 +4,10 @@ This tool allows editing of the sub assets (or objects) contained within a singl
 
 For easier browsing and installation visit the [GitHub Pages Site](https://konsti219.github.io/vcc-tools/).
 
+## Demo
+
+https://user-images.githubusercontent.com/37149441/235305504-9714a6d8-acd0-4e3d-bf4e-08913737a05f.mp4
+
 ## Use cases
 
 - Organise your files by keeping related assets in one main asset.
